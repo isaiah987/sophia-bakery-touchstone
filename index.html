@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Star Bakery - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lora:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-container">
+            <img src="bakery-logo_c.png" alt="North Star Bakery Logo featuring a stylized loaf of bread and wheat" width="200">
+        </div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <h1>Welcome to North Star Bakery</h1>
+            <p>Fresh, artisan bread baked daily in the heart of the community.</p>
+            
+            <div class="audio-greeting">
+                <h2>A Message from Our Head Baker</h2>
+                <audio controls>
+                    <source src="bakery-welcome_c.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element. Here is a transcript: "Welcome to North Star Bakery, where we bake our breads fresh every single morning using locally sourced ingredients."
+                </audio>
+            </div>
+        </section>
+
+        <section class="featured-section">
+            <h2>Featured Item: Seasonal Sourdough</h2>
+            <picture class="featured-image">
+                <source media="(min-width: 800px)" srcset="bakery-feature-large_c.png">
+                <img src="bakery-feature-small_c.png" alt="A freshly baked, crusty seasonal sourdough loaf on a wooden cutting board" style="max-width: 100%;">
+            </picture>
+            <p>Our seasonal sourdough is naturally leavened and baked to a perfect golden crisp.</p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 North Star Bakery. All rights reserved.</p>
+    </footer>
+</body>
+</html>
