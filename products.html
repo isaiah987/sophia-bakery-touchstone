@@ -28,12 +28,19 @@
         <h1>Our Baked Goods</h1>
         <p>Browse our selection of daily baked breads and pastries.</p>
 
+        <!-- ADDED FOR TOUCHSTONE 4: Favorites Counter Badge -->
+        <div class="favorites-badge" style="margin-bottom: 1.5rem; font-weight: bold;">
+            Saved Favorites: <span id="favorites-count">0</span>
+        </div>
+
         <div class="product-grid">
             <section class="product-card">
                 <h2>Classic Artisan Bread</h2>
                 <img src="bakery-bread_c.png" alt="Several crusty artisan bread loaves stacked in a basket" width="400" style="max-width: 100%;">
                 <p>Our daily staple, perfect for sandwiches or dipping in soup.</p>
                 <p class="price">$6.00</p>
+                <!-- ADDED FOR TOUCHSTONE 4: Favorite Button -->
+                <button class="favorite-btn" data-id="sourdough">🤍 Add to Favorites</button>
             </section>
 
             <section class="product-card">
@@ -41,6 +48,8 @@
                 <img src="bakery-signature-loaf_c.png" alt="A sliced signature loaf topped with toasted pumpkin and sunflower seeds" width="400" style="max-width: 100%;">
                 <p>A hearty loaf packed with roasted seeds and grains.</p>
                 <p class="price">$8.50</p>
+                <!-- ADDED FOR TOUCHSTONE 4: Favorite Button -->
+                <button class="favorite-btn" data-id="baguette">🤍 Add to Favorites</button>
             </section>
         </div>
     </main>
@@ -48,5 +57,7 @@
     <footer class="site-footer">
         <p>&copy; 2026 North Star Bakery. All rights reserved.</p>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>
