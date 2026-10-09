@@ -6,12 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const favoriteButtons = document.querySelectorAll('.favorite-btn');
   const favoritesCountEl = document.getElementById('favorites-count');
 
-  // Array of objects (Data Structure Requirement)
-  const bakeryCatalog = [
-    { id: 'sourdough', name: 'Classic Artisan Bread' },
-    { id: 'baguette', name: 'Signature Seeded Loaf' }
-  ];
-
   // Retrieve stored favorites from localStorage or default to empty array
   let favorites = JSON.parse(localStorage.getItem('bakery_favorites')) || [];
 
@@ -70,91 +64,126 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('saved_user_name');
     if (savedName) {
       nameInput.value = savedName;
+      nameInput.style.borderColor = '#2E8B57';
     }
   }
 
+  // Helper function: Display inline error message under input
+  function showError(inputElement, message) {
+    let errorSpan = inputElement.parentElement.querySelector('.error-msg');
+    if (!errorSpan) {
+      errorSpan = document.createElement('span');
+      errorSpan.className = 'error-msg';
+      errorSpan.style.color = '#B22222';
+      errorSpan.style.fontSize = '0.85rem';
+      errorSpan.style.fontWeight = 'bold';
+      errorSpan.style.display = 'block';
+      errorSpan.style.marginTop = '0.25rem';
+      inputElement.parentElement.appendChild(errorSpan);
+    }
+    errorSpan.textContent = message;
+    inputElement.style.borderColor = '#B22222';
+    inputElement.style.backgroundColor = '#FFF0F0';
+  }
+
+  // Helper function: Clear error and show GREEN success state
+  function clearError(inputElement) {
+    const errorSpan = inputElement.parentElement.querySelector('.error-msg');
+    if (errorSpan) errorSpan.remove();
+    inputElement.style.borderColor = '#2E8B57';
+    inputElement.style.backgroundColor = '#F0FFF0';
+  }
+
+  // --- VALIDATION FUNCTIONS ---
+
+  // 1. Full Name Check (Requires first + last name, auto-capitalizes)
+  function validateName() {
+    if (!nameInput) return true;
+    const rawName = nameInput.value.trim();
+    const nameWords = rawName.split(/\s+/).filter(word => word.length > 0);
+
+    if (!rawName) {
+      showError(nameInput, 'Full name is required.');
+      return false;
+    } else if (nameWords.length < 2) {
+      showError(nameInput, 'Please enter both your first and last name (e.g., John Smith).');
+      return false;
+    } else {
+      // Auto-capitalize first letter of each word live on screen
+      const formattedName = nameWords
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+      nameInput.value = formattedName;
+      clearError(nameInput);
+      return true;
+    }
+  }
+
+  // 2. Email Format & Typo Check
+  function validateEmail() {
+    if (!emailInput) return true;
+    const emailValue = emailInput.value.trim().toLowerCase();
+    emailInput.value = emailValue;
+
+    // Strict Regex: requires domain name >= 2 chars AND extension >= 2 chars
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]{2,}\.[a-zA-Z]{2,}$/;
+
+    if (!emailValue) {
+      showError(emailInput, 'Email address is required.');
+      return false;
+    } else if (!emailRegex.test(emailValue)) {
+      showError(emailInput, 'Please enter a complete, valid email address (e.g., johnsmith@gmail.com).');
+      return false;
+    } else if (emailValue.endsWith('.co') && !emailValue.endsWith('.com')) {
+      showError(emailInput, 'Did you mean .com instead of .co? Please check your email.');
+      return false;
+    } else {
+      clearError(emailInput);
+      return true;
+    }
+  }
+
+  // 3. Message Length Check
+  function validateMessage() {
+    if (!messageInput) return true;
+    const messageValue = messageInput.value.trim();
+    if (messageValue.length > 0 && messageValue.length < 10) {
+      showError(messageInput, 'Message must be at least 10 characters long.');
+      return false;
+    } else {
+      clearError(messageInput);
+      return true;
+    }
+  }
+
+  // --- LIVE EVENT LISTENERS (Triggers immediately when clicking/tabbing away) ---
+  if (nameInput) {
+    nameInput.addEventListener('blur', validateName);
+  }
+  if (emailInput) {
+    emailInput.addEventListener('blur', validateEmail);
+  }
+  if (messageInput) {
+    messageInput.addEventListener('blur', validateMessage);
+  }
+
+  // --- SUBMIT EVENT LISTENER ---
   if (contactForm) {
     contactForm.addEventListener('submit', (event) => {
-      event.preventDefault(); // Stop default HTML submission
-      let isValid = true;
+      event.preventDefault(); // Stop page reload
 
-      // Helper function: Display inline error message under input
-      function showError(inputElement, message) {
-        let errorSpan = inputElement.parentElement.querySelector('.error-msg');
-        if (!errorSpan) {
-          errorSpan = document.createElement('span');
-          errorSpan.className = 'error-msg';
-          errorSpan.style.color = '#B22222';
-          errorSpan.style.fontSize = '0.85rem';
-          errorSpan.style.fontWeight = 'bold';
-          errorSpan.style.display = 'block';
-          errorSpan.style.marginTop = '0.25rem';
-          inputElement.parentElement.appendChild(errorSpan);
-        }
-        errorSpan.textContent = message;
-        inputElement.style.borderColor = '#B22222';
-      }
+      const isNameValid = validateName();
+      const isEmailValid = validateEmail();
+      const isMessageValid = validateMessage();
 
-      // Helper function: Remove inline error message
-      function clearError(inputElement) {
-        const errorSpan = inputElement.parentElement.querySelector('.error-msg');
-        if (errorSpan) errorSpan.remove();
-        inputElement.style.borderColor = '';
-      }
-
-      // 1. FULL NAME VALIDATION (Required, min 2 names, auto-capitalizes)
-      const rawName = nameInput.value.trim();
-      const nameWords = rawName.split(/\s+/).filter(word => word.length > 0);
-
-      if (!rawName) {
-        showError(nameInput, 'Full name is required.');
-        isValid = false;
-      } else if (nameWords.length < 2) {
-        showError(nameInput, 'Please enter both your first and last name (e.g., John Smith).');
-        isValid = false;
-      } else {
-        // Auto-capitalize first letter of each word
-        const formattedName = nameWords
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-          .join(' ');
-        nameInput.value = formattedName;
-        clearError(nameInput);
-      }
-
-      // 2. EMAIL FORMAT VALIDATION
-      const emailValue = emailInput.value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailValue) {
-        showError(emailInput, 'Email address is required.');
-        isValid = false;
-      } else if (!emailRegex.test(emailValue)) {
-        showError(emailInput, 'Please enter a valid email format (e.g., name@domain.com).');
-        isValid = false;
-      } else {
-        clearError(emailInput);
-      }
-
-      // 3. MESSAGE LENGTH CHECK (Triggers error ONLY if text is entered and is < 10 chars)
-      if (messageInput) {
-        const messageValue = messageInput.value.trim();
-        if (messageValue.length > 0 && messageValue.length < 10) {
-          showError(messageInput, 'Message must be at least 10 characters long.');
-          isValid = false;
-        } else {
-          clearError(messageInput);
-        }
-      }
-
-      // SUCCESSFUL SUBMISSION
-      if (isValid) {
-        // Save formatted name to localStorage
+      if (isNameValid && isEmailValid && isMessageValid) {
+        // Save full name to localStorage
         localStorage.setItem('saved_user_name', nameInput.value.trim());
-        
-        // Show submission alert
-        alert('Thank you! Your message has been submitted successfully.');
-        
-        // Clear message box, keep auto-filled name ready for next time
+
+        // Show submission alert popup
+        alert(`Thank you, ${nameInput.value.trim()}! Your message has been submitted successfully.`);
+
+        // Clear comment box after submission
         if (messageInput) messageInput.value = '';
       }
     });
